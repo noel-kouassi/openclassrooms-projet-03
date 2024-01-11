@@ -1,8 +1,8 @@
 package com.openclassroom.rental.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 
 @Data
 public class RegisterDto {
@@ -16,5 +16,4 @@ public class RegisterDto {
 
     @NotBlank(message = "Password should not be null or empty")
     private String password;
-
 }

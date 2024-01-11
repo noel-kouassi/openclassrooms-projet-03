@@ -24,8 +24,7 @@ public class AuthenticationController {
 
     @PostMapping("/auth/register")
     public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterDto registerDto){
-        userService.saveUser(registerDto);
-        String message = "User created successfully";
+        String message = userService.saveUser(registerDto);
         return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
 }
