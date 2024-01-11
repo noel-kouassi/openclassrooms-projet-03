@@ -2,6 +2,7 @@ package com.openclassroom.rental.controller;
 
 import com.openclassroom.rental.dto.RegisterDto;
 import com.openclassroom.rental.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterDto registerDto){
+    public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterDto registerDto){
         userService.saveUser(registerDto);
         String message = "User created successfully";
         return new ResponseEntity<>(message, HttpStatus.CREATED);
