@@ -1,10 +1,14 @@
 package com.openclassroom.rental.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegisterDto {
 
     @NotBlank(message = "Email should not be null or empty")
