@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RentalServiceImpl implements RentalService {
 
@@ -60,10 +62,8 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public RentalDto getRental(Long rentalId) {
-
         Rental rental = rentalRepository.findById(rentalId)
                 .orElseThrow(() -> new ResourceNotFoundException("Rental", "id", rentalId));
-
         RentalDto rentalDto = modelMapper.map(rental, RentalDto.class);
         User user = rental.getUser();
         if (user != null) {
@@ -71,5 +71,20 @@ public class RentalServiceImpl implements RentalService {
         }
         rentalDto.formatRentalDate();
         return rentalDto;
+    }
+
+    @Override
+    public List<RentalDto> getAllRentals() {
+        List<Rental> rentals = rentalRepository.findAll();
+        return rentals.stream()
+                .map(rental -> {
+                    RentalDto rentalDto = modelMapper.map(rental, RentalDto.class);
+                    User user = rental.getUser();
+                    if (user != null) {
+                        rentalDto.setOwnerId(user.getId());
+                    }
+                    rentalDto.formatRentalDate();
+                    return rentalDto;
+                }).toList();
     }
 }

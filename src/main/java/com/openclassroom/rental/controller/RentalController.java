@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @Tag(name = "Rental rest api controller for operations management")
@@ -75,5 +77,20 @@ public class RentalController {
     public ResponseEntity<RentalDto> getRental(@PathVariable(value = "id") Long rentalId) {
         RentalDto rentalDto = rentalService.getRental(rentalId);
         return new ResponseEntity<>(rentalDto, HttpStatus.OK);
+    }
+
+    /**
+     * @return rentalDtos as response
+     */
+    @Operation(summary = "Get all the rentals",
+            description = "getRentals REST API is used to get all the rentals from the information system",
+            responses = {@ApiResponse(responseCode = "200", description = "Rentals provided with success"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized user, provided user credentials are wrong", content = @Content(mediaType = "*/*"))}
+    )
+    @GetMapping("/rentals")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<RentalDto>> getRentals() {
+        List<RentalDto> rentalDtos = rentalService.getAllRentals();
+        return new ResponseEntity<>(rentalDtos, HttpStatus.OK);
     }
 }
