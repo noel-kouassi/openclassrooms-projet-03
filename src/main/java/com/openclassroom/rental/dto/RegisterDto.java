@@ -1,6 +1,5 @@
 package com.openclassroom.rental.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +19,5 @@ public class RegisterDto {
     private String name;
 
     @NotBlank(message = "Password should not be null or empty")
-    @JsonIgnore
     private String password;
 }

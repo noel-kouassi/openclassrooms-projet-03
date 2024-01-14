@@ -3,8 +3,10 @@ package com.openclassroom.rental.service.impl;
 import com.openclassroom.rental.dto.LoginDto;
 import com.openclassroom.rental.dto.RegisterDto;
 import com.openclassroom.rental.dto.UserDto;
+import com.openclassroom.rental.entity.Role;
 import com.openclassroom.rental.entity.User;
 import com.openclassroom.rental.exception.RentalException;
+import com.openclassroom.rental.repository.RoleRepository;
 import com.openclassroom.rental.repository.UserRepository;
 import com.openclassroom.rental.security.JwtTokenProvider;
 import com.openclassroom.rental.service.UserService;
@@ -18,7 +20,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.openclassroom.rental.util.DateFormatter.formatDate;
 
@@ -29,14 +33,17 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final RoleRepository roleRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+    public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -58,6 +65,12 @@ public class UserServiceImpl implements UserService {
         user.setName(registerDto.getName());
         user.setEmail(registerDto.getEmail());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+
+        Set<Role> roles = new HashSet<>();
+        Role userRole = roleRepository.findByName("ROLE_USER").get();
+        roles.add(userRole);
+        user.setRoles(roles);
+
         userRepository.save(user);
         return "User successfully created !";
     }
