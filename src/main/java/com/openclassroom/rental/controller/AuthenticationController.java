@@ -3,19 +3,18 @@ package com.openclassroom.rental.controller;
 import com.openclassroom.rental.dto.JwtTokenResponse;
 import com.openclassroom.rental.dto.LoginDto;
 import com.openclassroom.rental.dto.RegisterDto;
+import com.openclassroom.rental.dto.UserDto;
 import com.openclassroom.rental.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -35,9 +34,9 @@ public class AuthenticationController {
      * @return Jwt as token response
      */
     @Operation(summary = "Create an new user",
-               description = "Create User REST API is used to save user into database",
-               responses = {@ApiResponse(responseCode = "200", description = "User created with success"),
-                            @ApiResponse(responseCode = "400", description = "Bad request, wrong email or password", content = @Content(mediaType = "*/*"))}
+            description = "Create User REST API is used to save user into database",
+            responses = {@ApiResponse(responseCode = "200", description = "User created with success"),
+                    @ApiResponse(responseCode = "400", description = "Bad request, wrong email or password", content = @Content(mediaType = "*/*"))}
     )
     @PostMapping("/auth/register")
     public ResponseEntity<JwtTokenResponse> registerUser(@Valid @RequestBody RegisterDto registerDto) {
@@ -69,5 +68,20 @@ public class AuthenticationController {
         JwtTokenResponse jwtTokenResponse = new JwtTokenResponse();
         jwtTokenResponse.setToken(userToken);
         return new ResponseEntity<>(jwtTokenResponse, HttpStatus.OK);
+    }
+
+    /**
+     * @param request the httpServletRequest which from token is extracted
+     * @return userDto as response
+     */
+    @Operation(summary = "Provide an user information",
+            description = "GetUserFromToken REST API is used to provide user information just from token",
+            responses = {@ApiResponse(responseCode = "200", description = "User information provided with success"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized user, provided user credentials are wrong", content = @Content(mediaType = "*/*"))}
+    )
+    @GetMapping("/auth/me")
+    public ResponseEntity<UserDto> getUserFromToken(HttpServletRequest request) {
+        UserDto userDto = userService.getUserFromToken(request);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 }
