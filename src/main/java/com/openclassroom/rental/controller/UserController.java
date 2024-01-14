@@ -1,6 +1,5 @@
 package com.openclassroom.rental.controller;
 
-import com.openclassroom.rental.dto.RentalDto;
 import com.openclassroom.rental.dto.UserDto;
 import com.openclassroom.rental.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api")
 @Tag(name = "User rest api controller for user operation")
 public class UserController {
 
