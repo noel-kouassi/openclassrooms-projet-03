@@ -6,6 +6,7 @@ import com.openclassroom.rental.dto.UserDto;
 import com.openclassroom.rental.entity.Role;
 import com.openclassroom.rental.entity.User;
 import com.openclassroom.rental.exception.RentalException;
+import com.openclassroom.rental.exception.ResourceNotFoundException;
 import com.openclassroom.rental.repository.RoleRepository;
 import com.openclassroom.rental.repository.UserRepository;
 import com.openclassroom.rental.security.JwtTokenProvider;
@@ -67,7 +68,8 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
         Set<Role> roles = new HashSet<>();
-        Role userRole = roleRepository.findByName("ROLE_USER").get();
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found in database with name ROLE_USER"));
         roles.add(userRole);
         user.setRoles(roles);
 

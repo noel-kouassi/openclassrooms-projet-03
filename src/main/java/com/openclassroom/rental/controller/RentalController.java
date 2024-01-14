@@ -2,6 +2,7 @@ package com.openclassroom.rental.controller;
 
 import com.openclassroom.rental.dto.InputRentalDto;
 import com.openclassroom.rental.dto.MessageDto;
+import com.openclassroom.rental.dto.RentalDto;
 import com.openclassroom.rental.service.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,7 +45,7 @@ public class RentalController {
 
     /**
      * @param inputRentalDto the input from which the rental is updated
-     * @param rentalId the identifier of the rental to be updated
+     * @param rentalId       the identifier of the rental to be updated
      * @return messageDto as response
      */
     @Operation(summary = "Update a rental",
@@ -55,8 +56,24 @@ public class RentalController {
     @PutMapping("/rentals/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<MessageDto> updateRental(@PathVariable(value = "id") Long rentalId,
-                                                    @Valid @RequestBody InputRentalDto inputRentalDto){
+                                                   @Valid @RequestBody InputRentalDto inputRentalDto) {
         MessageDto messageDto = rentalService.updateRental(inputRentalDto, rentalId);
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
+    }
+
+    /**
+     * @param rentalId the identifier of the rental to be retrieved
+     * @return rentalDto as response
+     */
+    @Operation(summary = "Get a rental",
+            description = "getRental REST API is used to get a rental from the information system",
+            responses = {@ApiResponse(responseCode = "200", description = "Rental provided with success"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized user, provided user credentials are wrong", content = @Content(mediaType = "*/*"))}
+    )
+    @GetMapping("/rentals/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<RentalDto> getRental(@PathVariable(value = "id") Long rentalId) {
+        RentalDto rentalDto = rentalService.getRental(rentalId);
+        return new ResponseEntity<>(rentalDto, HttpStatus.OK);
     }
 }
