@@ -39,6 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Validate token
         if (token != null && !token.equalsIgnoreCase("jwt")) {
+
             if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
 
                 // Get username from token

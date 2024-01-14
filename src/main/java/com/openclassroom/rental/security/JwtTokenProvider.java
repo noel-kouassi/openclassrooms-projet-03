@@ -1,7 +1,10 @@
 package com.openclassroom.rental.security;
 
 import com.openclassroom.rental.exception.RentalException;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 
@@ -29,9 +33,9 @@ public class JwtTokenProvider {
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
         return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(expireDate)
+                .subject(username)
+                .issuedAt(new Date())
+                .expiration(expireDate)
                 .signWith(key())
                 .compact();
     }
@@ -41,29 +45,30 @@ public class JwtTokenProvider {
     }
 
     public String getUsername(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(key())
+
+        return Jwts.parser()
+                .verifyWith((SecretKey) key())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject();
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
-                    .setSigningKey(key())
+                    .verifyWith((SecretKey) key())
                     .build()
                     .parse(token);
             return true;
-        } catch (MalformedJwtException ex) {
-            throw new RentalException(HttpStatus.BAD_REQUEST, "Invalid JWT token");
-        } catch (ExpiredJwtException ex) {
+        } catch (MalformedJwtException malformedJwtException) {
+            throw new RentalException(HttpStatus.BAD_REQUEST, "Invalid JWT Token");
+        } catch (ExpiredJwtException expiredJwtException) {
             throw new RentalException(HttpStatus.BAD_REQUEST, "Expired JWT token");
-        } catch (UnsupportedJwtException ex) {
+        } catch (UnsupportedJwtException unsupportedJwtException) {
             throw new RentalException(HttpStatus.BAD_REQUEST, "Unsupported JWT token");
-        } catch (IllegalArgumentException ex) {
-            throw new RentalException(HttpStatus.BAD_REQUEST, "JWT claims string is empty.");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            throw new RentalException(HttpStatus.BAD_REQUEST, "Jwt claims string is null or empty");
         }
     }
 
