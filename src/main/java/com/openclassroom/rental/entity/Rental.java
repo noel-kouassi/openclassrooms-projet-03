@@ -1,6 +1,7 @@
 package com.openclassroom.rental.entity;
 
 import com.openclassroom.rental.common.AbstractEntity;
+import com.openclassroom.rental.dto.InputRentalDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,4 +36,27 @@ public class Rental extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User user;
+
+    public void updateInformation(InputRentalDto inputRentalDto) {
+
+        if (inputRentalDto.getName() != null) {
+            this.name = inputRentalDto.getName();
+        }
+
+        if (inputRentalDto.getSurface() != null) {
+            this.surface = inputRentalDto.getSurface();
+        }
+
+        if (inputRentalDto.getPrice() != null) {
+            this.price = inputRentalDto.getPrice();
+        }
+
+        if (inputRentalDto.getPicture() != null) {
+            this.picture = inputRentalDto.getPicture();
+        }
+
+        if (inputRentalDto.getDescription() != null) {
+            this.description = inputRentalDto.getDescription();
+        }
+    }
 }

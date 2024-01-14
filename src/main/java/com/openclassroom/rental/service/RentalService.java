@@ -6,4 +6,6 @@ import com.openclassroom.rental.dto.MessageDto;
 public interface RentalService {
 
     MessageDto saveRental(InputRentalDto inputRentalDto);
+
+    MessageDto updateRental(InputRentalDto inputRentalDto, Long rentalId);
 }
