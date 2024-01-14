@@ -12,4 +12,6 @@ public interface UserService {
     String login(LoginDto loginDto);
 
     UserDto getUserFromToken(HttpServletRequest httpServletRequest);
+
+    UserDto getUserById(Long userId);
 }

@@ -84,4 +84,5 @@ public class AuthenticationController {
         UserDto userDto = userService.getUserFromToken(request);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
+
 }

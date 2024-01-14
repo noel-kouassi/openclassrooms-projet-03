@@ -12,6 +12,7 @@ import com.openclassroom.rental.repository.UserRepository;
 import com.openclassroom.rental.security.JwtTokenProvider;
 import com.openclassroom.rental.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.openclassroom.rental.util.DateFormatter.formatDate;
@@ -40,13 +40,16 @@ public class UserServiceImpl implements UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
-    public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+    public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, ModelMapper modelMapper) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -85,19 +88,24 @@ public class UserServiceImpl implements UserService {
 
             if (jwtTokenProvider.validateToken(token)) {
                 String login = jwtTokenProvider.getUsername(token);
-                Optional<User> optionalUser = userRepository.findByEmail(login);
-                if (optionalUser.isPresent()) {
-                    User user = optionalUser.get();
-                    UserDto userDto = new UserDto();
-                    userDto.setId(user.getId());
-                    userDto.setName(user.getName());
-                    userDto.setEmail(user.getEmail());
-                    userDto.setCreatedAt(formatDate(user.getCreatedAt()));
-                    userDto.setUpdatedAt(formatDate(user.getUpdatedAt()));
-                    return userDto;
-                }
+                User user = userRepository.findByEmail(login)
+                        .orElseThrow(() -> new ResourceNotFoundException(String.format("User not found with email %s", login)));
+                UserDto userDto = modelMapper.map(user, UserDto.class);
+                userDto.setCreatedAt(formatDate(user.getCreatedAt()));
+                userDto.setUpdatedAt(formatDate(user.getUpdatedAt()));
+                return userDto;
             }
         }
         return null;
+    }
+
+    @Override
+    public UserDto getUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+        userDto.setCreatedAt(formatDate(user.getCreatedAt()));
+        userDto.setUpdatedAt(formatDate(user.getUpdatedAt()));
+        return userDto;
     }
 }
