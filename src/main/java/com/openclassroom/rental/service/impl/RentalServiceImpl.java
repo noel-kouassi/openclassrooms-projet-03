@@ -37,14 +37,7 @@ public class RentalServiceImpl implements RentalService {
 
         User user = userRepository.findById(inputRentalDto.getOwnerId())
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User not found with ownerId: %s", inputRentalDto.getOwnerId())));
-
-        Rental rental = new Rental();
-        rental.setName(inputRentalDto.getName());
-        rental.setDescription(inputRentalDto.getDescription());
-        rental.setPicture(inputRentalDto.getPicture());
-        rental.setPrice(inputRentalDto.getPrice());
-        rental.setSurface(inputRentalDto.getSurface());
-
+        Rental rental = modelMapper.map(inputRentalDto, Rental.class);
         rental.setUser(user);
         rentalRepository.save(rental);
         return new MessageDto("Rental created !");
@@ -64,6 +57,17 @@ public class RentalServiceImpl implements RentalService {
     public RentalDto getRental(Long rentalId) {
         Rental rental = rentalRepository.findById(rentalId)
                 .orElseThrow(() -> new ResourceNotFoundException("Rental", "id", rentalId));
+        return constructRental(rental);
+    }
+
+    @Override
+    public List<RentalDto> getAllRentals() {
+        List<Rental> rentals = rentalRepository.findAll();
+        return rentals.stream()
+                .map(this::constructRental).toList();
+    }
+
+    private RentalDto constructRental(Rental rental) {
         RentalDto rentalDto = modelMapper.map(rental, RentalDto.class);
         User user = rental.getUser();
         if (user != null) {
@@ -71,20 +75,5 @@ public class RentalServiceImpl implements RentalService {
         }
         rentalDto.formatRentalDate();
         return rentalDto;
-    }
-
-    @Override
-    public List<RentalDto> getAllRentals() {
-        List<Rental> rentals = rentalRepository.findAll();
-        return rentals.stream()
-                .map(rental -> {
-                    RentalDto rentalDto = modelMapper.map(rental, RentalDto.class);
-                    User user = rental.getUser();
-                    if (user != null) {
-                        rentalDto.setOwnerId(user.getId());
-                    }
-                    rentalDto.formatRentalDate();
-                    return rentalDto;
-                }).toList();
     }
 }
