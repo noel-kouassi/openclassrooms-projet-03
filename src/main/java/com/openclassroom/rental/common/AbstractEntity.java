@@ -31,14 +31,14 @@ public abstract class AbstractEntity {
     private Timestamp updatedAt;
 
     @PrePersist
-    protected void onCreate() {
+    public void onCreate() {
         Timestamp timestamp = new Timestamp(currentTimeMillis());
-        createdAt = timestamp;
-        updatedAt = timestamp;
+        this.createdAt = timestamp;
+        this.updatedAt = timestamp;
     }
 
     @PreUpdate
-    protected void onUpdate() {
-        updatedAt = new Timestamp(currentTimeMillis());
+    public void onUpdate() {
+        this.updatedAt = new Timestamp(currentTimeMillis());
     }
 }

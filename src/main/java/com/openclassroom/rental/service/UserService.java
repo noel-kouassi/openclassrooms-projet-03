@@ -1,8 +1,8 @@
 package com.openclassroom.rental.service;
 
-import com.openclassroom.rental.dto.LoginDto;
-import com.openclassroom.rental.dto.RegisterDto;
-import com.openclassroom.rental.dto.UserDto;
+import com.openclassroom.rental.dto.input.LoginDto;
+import com.openclassroom.rental.dto.input.RegisterDto;
+import com.openclassroom.rental.dto.response.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface UserService {

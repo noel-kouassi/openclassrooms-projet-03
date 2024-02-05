@@ -19,6 +19,7 @@
 * DB_USERNAME
 * DB_PASSWORD
 * JWT_SECRET_KEY
+* PICTURES_DIRECTORY
 
 7 - Installer apache maven 3.9.6
 

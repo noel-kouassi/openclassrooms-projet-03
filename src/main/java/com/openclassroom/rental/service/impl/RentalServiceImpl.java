@@ -1,8 +1,9 @@
 package com.openclassroom.rental.service.impl;
 
-import com.openclassroom.rental.dto.InputRentalDto;
-import com.openclassroom.rental.dto.MessageDto;
-import com.openclassroom.rental.dto.RentalDto;
+import com.openclassroom.rental.dto.input.InputRentalDto;
+import com.openclassroom.rental.dto.input.MessageDto;
+import com.openclassroom.rental.dto.response.RentalDto;
+import com.openclassroom.rental.dto.response.RentalResponse;
 import com.openclassroom.rental.entity.Rental;
 import com.openclassroom.rental.entity.User;
 import com.openclassroom.rental.exception.ResourceNotFoundException;
@@ -61,10 +62,11 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public List<RentalDto> getAllRentals() {
+    public RentalResponse getAllRentals() {
         List<Rental> rentals = rentalRepository.findAll();
-        return rentals.stream()
+        List<RentalDto> rentalDtos = rentals.stream()
                 .map(this::constructRental).toList();
+        return new RentalResponse(rentalDtos);
     }
 
     private RentalDto constructRental(Rental rental) {

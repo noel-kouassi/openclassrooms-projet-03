@@ -1,6 +1,6 @@
 package com.openclassroom.rental.controller;
 
-import com.openclassroom.rental.dto.UserDto;
+import com.openclassroom.rental.dto.response.UserDto;
 import com.openclassroom.rental.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

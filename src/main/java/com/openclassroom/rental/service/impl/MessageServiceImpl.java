@@ -1,7 +1,7 @@
 package com.openclassroom.rental.service.impl;
 
-import com.openclassroom.rental.dto.InputMessageDto;
-import com.openclassroom.rental.dto.MessageDto;
+import com.openclassroom.rental.dto.input.InputMessageDto;
+import com.openclassroom.rental.dto.input.MessageDto;
 import com.openclassroom.rental.entity.Message;
 import com.openclassroom.rental.entity.Rental;
 import com.openclassroom.rental.entity.User;

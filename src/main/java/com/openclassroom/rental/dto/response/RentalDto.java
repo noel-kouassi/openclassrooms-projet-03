@@ -1,4 +1,4 @@
-package com.openclassroom.rental.dto;
+package com.openclassroom.rental.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.openclassroom.rental.util.DateFormatter;

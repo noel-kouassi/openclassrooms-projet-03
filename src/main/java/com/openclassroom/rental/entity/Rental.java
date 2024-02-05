@@ -1,7 +1,7 @@
 package com.openclassroom.rental.entity;
 
 import com.openclassroom.rental.common.AbstractEntity;
-import com.openclassroom.rental.dto.InputRentalDto;
+import com.openclassroom.rental.dto.input.InputRentalDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;

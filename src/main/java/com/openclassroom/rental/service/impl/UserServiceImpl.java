@@ -1,8 +1,8 @@
 package com.openclassroom.rental.service.impl;
 
-import com.openclassroom.rental.dto.LoginDto;
-import com.openclassroom.rental.dto.RegisterDto;
-import com.openclassroom.rental.dto.UserDto;
+import com.openclassroom.rental.dto.input.LoginDto;
+import com.openclassroom.rental.dto.input.RegisterDto;
+import com.openclassroom.rental.dto.response.UserDto;
 import com.openclassroom.rental.entity.Role;
 import com.openclassroom.rental.entity.User;
 import com.openclassroom.rental.exception.RentalException;
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String login(LoginDto loginDto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getLogin(), loginDto.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtTokenProvider.generateToken(authentication);
     }

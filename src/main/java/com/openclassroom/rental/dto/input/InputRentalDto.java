@@ -1,4 +1,4 @@
-package com.openclassroom.rental.dto;
+package com.openclassroom.rental.dto.input;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

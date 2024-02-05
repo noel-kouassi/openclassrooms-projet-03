@@ -1,17 +1,21 @@
-package com.openclassroom.rental.dto;
+package com.openclassroom.rental.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.NotBlank;
+
+import java.util.Date;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageDto {
+public class ErrorMessage {
 
-    @NotBlank(message = "Message should not be null or empty")
+    private Date timestamp;
+
     private String message;
+
+    private String details;
 }

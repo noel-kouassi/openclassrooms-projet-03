@@ -1,4 +1,4 @@
-package com.openclassroom.rental.dto;
+package com.openclassroom.rental.dto.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;

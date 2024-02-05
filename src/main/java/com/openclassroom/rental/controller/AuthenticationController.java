@@ -1,9 +1,9 @@
 package com.openclassroom.rental.controller;
 
-import com.openclassroom.rental.dto.JwtTokenResponse;
-import com.openclassroom.rental.dto.LoginDto;
-import com.openclassroom.rental.dto.RegisterDto;
-import com.openclassroom.rental.dto.UserDto;
+import com.openclassroom.rental.dto.input.LoginDto;
+import com.openclassroom.rental.dto.input.RegisterDto;
+import com.openclassroom.rental.dto.response.JwtTokenResponse;
+import com.openclassroom.rental.dto.response.UserDto;
 import com.openclassroom.rental.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,7 +33,6 @@ public class AuthenticationController {
         this.userService = userService;
     }
 
-
     /**
      * @param registerDto input data which contains the user information for his creation
      * @return Jwt as token response
@@ -48,7 +47,7 @@ public class AuthenticationController {
 
         userService.saveUser(registerDto);
         LoginDto loginDto = new LoginDto();
-        loginDto.setLogin(registerDto.getEmail());
+        loginDto.setEmail(registerDto.getEmail());
         loginDto.setPassword(registerDto.getPassword());
 
         String userToken = userService.login(loginDto);

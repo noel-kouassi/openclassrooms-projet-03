@@ -1,6 +1,6 @@
 package com.openclassroom.rental.exception;
 
-import com.openclassroom.rental.dto.ErrorMessage;
+import com.openclassroom.rental.dto.response.ErrorMessage;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
