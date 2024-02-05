@@ -1,16 +1,17 @@
 package com.openclassroom.rental.controller;
 
-import com.openclassroom.rental.dto.InputRentalDto;
-import com.openclassroom.rental.dto.MessageDto;
-import com.openclassroom.rental.dto.RentalDto;
+import com.openclassroom.rental.dto.input.InputRentalDto;
+import com.openclassroom.rental.dto.input.MessageDto;
+import com.openclassroom.rental.dto.response.RentalDto;
+import com.openclassroom.rental.dto.response.RentalResponse;
 import com.openclassroom.rental.service.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,11 +19,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
+import static java.lang.Long.parseLong;
 
 @RestController
 @RequestMapping("/api")
@@ -32,13 +41,21 @@ public class RentalController {
 
     private final RentalService rentalService;
 
+    @Value("${upload.path}")
+    private String uploadPath;
+
     @Autowired
     public RentalController(RentalService rentalService) {
         this.rentalService = rentalService;
     }
 
     /**
-     * @param inputRentalDto the input from which the rental is created
+     * @param picture     the picture of the rental to be uploaded
+     * @param price       the price of the rental
+     * @param name        the name of the rental
+     * @param description the description of the rental
+     * @param surface     the surface of the rental
+     * @param ownerId     the owner of the rental
      * @return messageDto as response
      */
     @Operation(summary = "Create a rental",
@@ -48,14 +65,32 @@ public class RentalController {
     )
     @PostMapping("/rentals")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<MessageDto> createRental(@Valid @RequestBody InputRentalDto inputRentalDto) {
+    public ResponseEntity<MessageDto> createRental(@RequestParam("picture") MultipartFile picture,
+                                                   @RequestParam("price") BigDecimal price,
+                                                   @RequestParam("name") String name,
+                                                   @RequestParam("description") String description,
+                                                   @RequestParam("surface") BigDecimal surface,
+                                                   @RequestParam("owner_id") String ownerId) {
+        InputRentalDto inputRentalDto;
+        try {
+            String fileName = picture.getOriginalFilename();
+            String fileNamePath = "assets/" + fileName;
+            Path filePath = Path.of(uploadPath + File.separator + fileName);
+            Files.copy(picture.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            inputRentalDto = new InputRentalDto(name, surface, price, fileNamePath, description, parseLong(ownerId));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         MessageDto messageDto = rentalService.saveRental(inputRentalDto);
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
     }
 
     /**
-     * @param inputRentalDto the input from which the rental is updated
-     * @param rentalId       the identifier of the rental to be updated
+     * @param price       the price of the rental
+     * @param name        the name of the rental
+     * @param description the description of the rental
+     * @param surface     the surface of the rental
+     * @param rentalId    the identifier of the rental to be updated
      * @return messageDto as response
      */
     @Operation(summary = "Update a rental",
@@ -66,7 +101,15 @@ public class RentalController {
     @PutMapping("/rentals/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<MessageDto> updateRental(@PathVariable(value = "id") Long rentalId,
-                                                   @Valid @RequestBody InputRentalDto inputRentalDto) {
+                                                   @RequestParam("price") BigDecimal price,
+                                                   @RequestParam("name") String name,
+                                                   @RequestParam("description") String description,
+                                                   @RequestParam("surface") BigDecimal surface) {
+        InputRentalDto inputRentalDto = new InputRentalDto();
+        inputRentalDto.setPrice(price);
+        inputRentalDto.setName(name);
+        inputRentalDto.setDescription(description);
+        inputRentalDto.setSurface(surface);
         MessageDto messageDto = rentalService.updateRental(inputRentalDto, rentalId);
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
     }
@@ -97,8 +140,8 @@ public class RentalController {
     )
     @GetMapping("/rentals")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<RentalDto>> getRentals() {
-        List<RentalDto> rentalDtos = rentalService.getAllRentals();
-        return new ResponseEntity<>(rentalDtos, HttpStatus.OK);
+    public ResponseEntity<RentalResponse> getRentals() {
+        RentalResponse rentalResponse = rentalService.getAllRentals();
+        return new ResponseEntity<>(rentalResponse, HttpStatus.OK);
     }
 }

@@ -1,7 +1,7 @@
 package com.openclassroom.rental.controller;
 
-import com.openclassroom.rental.dto.InputMessageDto;
-import com.openclassroom.rental.dto.MessageDto;
+import com.openclassroom.rental.dto.input.InputMessageDto;
+import com.openclassroom.rental.dto.input.MessageDto;
 import com.openclassroom.rental.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

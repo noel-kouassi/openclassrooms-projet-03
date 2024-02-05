@@ -1,7 +1,7 @@
 package com.openclassroom.rental.service;
 
-import com.openclassroom.rental.dto.InputMessageDto;
-import com.openclassroom.rental.dto.MessageDto;
+import com.openclassroom.rental.dto.input.InputMessageDto;
+import com.openclassroom.rental.dto.input.MessageDto;
 
 public interface MessageService {
 

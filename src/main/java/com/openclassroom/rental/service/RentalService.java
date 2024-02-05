@@ -1,10 +1,9 @@
 package com.openclassroom.rental.service;
 
-import com.openclassroom.rental.dto.InputRentalDto;
-import com.openclassroom.rental.dto.MessageDto;
-import com.openclassroom.rental.dto.RentalDto;
-
-import java.util.List;
+import com.openclassroom.rental.dto.input.InputRentalDto;
+import com.openclassroom.rental.dto.input.MessageDto;
+import com.openclassroom.rental.dto.response.RentalDto;
+import com.openclassroom.rental.dto.response.RentalResponse;
 
 public interface RentalService {
 
@@ -14,5 +13,5 @@ public interface RentalService {
 
     RentalDto getRental(Long rentalId);
 
-    List<RentalDto> getAllRentals();
+    RentalResponse getAllRentals();
 }
